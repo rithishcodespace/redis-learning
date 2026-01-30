@@ -1,4 +1,4 @@
-import { createClient } from 'redis';
+const {createClient} = require("redis");
 
 const client = createClient({
     username: process.env.REDIS_USERNAME,
@@ -9,11 +9,14 @@ const client = createClient({
     }
 });
 
-client.on('error', err => console.log('Redis Client Error', err));
+client.on('error', (err) => console.log('Redis Client Error', err));
 
-if(!client.isOpen){
-    await client.connect();
+async function connectRedis(){
+    if(!client.isOpen){
+        await client.connect();
+    }
+    console.log("connected to redis successfully!");
 }
 
-
+connectRedis();
 module.exports = client;
