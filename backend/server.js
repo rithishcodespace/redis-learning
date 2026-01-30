@@ -8,7 +8,6 @@ const createError = require("http-errors");
 
 const bookRoute = require("./routes/books");
 
-app.use('/',bookRoute);
 
 app.use('/',express.json());
 app.use(cors({
@@ -18,6 +17,7 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
+app.use('/',bookRoute);
 app.use(morgan('dev'));
 
 // 404 handler
