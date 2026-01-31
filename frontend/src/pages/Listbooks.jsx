@@ -39,13 +39,22 @@ const Listbook = () => {
     ]);
 
 
-    // useEffect(() => {
-    //     fetchBooks();
-    // },[])    
+    useEffect(() => {
+        fetchBooks();
+    },[])    
 
-    // const fetchBooks = async () => {
-    //     let response = await axios()
-    // }    
+    const fetchBooks = async () => {
+        try{
+            let response = await axios("http://localhost:4000/api/getBooks");
+            if(response.status == 200){
+                setBooks(response.data);
+            }
+            else window.alert("failed to fetch book!");
+        }
+        catch(error){
+            console.log(error);
+        }
+    }    
 
     return(
         <div className="flex flex-col gap-4 align-middle m-16 items-center">

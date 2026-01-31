@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Createbook = () => {
 
@@ -20,10 +21,28 @@ const Createbook = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-
-    console.log("Book Data:", formData);
+    e.preventDefault(); 
+  
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/createBook",
+        {
+          name: formData.name,
+          author: formData.author,
+          rating: formData.rating,
+          description: formData.description,
+        }
+      );
+  
+      if (response.status === 200) {
+        alert("Book added successfully!");
+      } else {
+        alert("Book not added!");
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Server error");
+    }
   };
 
   return (

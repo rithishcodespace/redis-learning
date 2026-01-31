@@ -3,10 +3,16 @@ const redis = require("../config/db");
 
     exports.getBooks = async (req,res,next) => {
         try{
-            const {id} = req.params;
-            let books = await redis.hGetAll(`book:${id}`);
-            if(Object.keys(books).length == 0)return res.send('No books available!');
-            res.send(books);
+            const bookIds = await redis.lRange("books",0,-1);
+            const books = [];
+            for(let id of bookIds){
+                const book = await redis.hGetAll(`book:${id}`);
+                books.push({
+                    ...book,
+                    rating:Number(book.rating)
+                })
+            }
+            res.status(200).send(books);
         }
         catch(error){
             next(error);
@@ -19,13 +25,14 @@ exports.create_book = async(req,res,next) => {
         if(name.trim() == "" || author.trim() == "" || !rating || description.trim() == ""){
             return next(createError.BadRequest('Invalid payload!'));
         }
-        const id = Math.random()*1000;
+        const id = redis.incr("book:id");
         await redis.hSet(`book:${id}`, {
             "name":name,
             "author":author,
             "rating":rating,
             "description":description
         })
+        await redis.rPush("books",id.toString());
         res.send(`book:${id} has been added successfully!`);
     }
     catch(error){
