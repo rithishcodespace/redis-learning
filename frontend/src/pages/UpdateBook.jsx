@@ -1,6 +1,22 @@
 import {useState,useEffect} from "react";
+import axios from "axios";
 
 const UpdateBook = () => {
+
+    const [formData,setFormData] = useState();
+
+    useEffect(() => {
+        axios.get()
+    })
+
+    function handleChange(e){
+        const{name,value} = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]:value
+        }))
+    }
+
     return(
         <div className="flex justify-center items-center h-screen">
         <form className="flex flex-col gap-3 max-w-md mx-auto p-4 w-2/4 bg-gray-200 rounded-md">
