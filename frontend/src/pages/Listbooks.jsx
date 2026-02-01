@@ -64,17 +64,36 @@ const Listbook = () => {
             <div className="h-142 w-2/4 bg-gray-300 overflow-scroll p-2.5 flex flex-col rounded-sm">
                 {books.length > 0 && books.map((book) => {
                     return(
-                        <div className="bg-amber-300 m-2.5 rounded-2xl p-2.5">
-                            <p className="font-bold">{book.name}</p>
-                            <p className="font-serif">{book.author}</p>
-                            <p>⭐{book.rating}</p>
-                            <p>{book.description}</p>
+                        <div className="flex items-start gap-4 p-4">
+                            {/* Book Info */}
+                            <div className="bg-amber-300 rounded-2xl p-4 flex-1 shadow-sm">
+                                <p className="font-bold text-lg">{book.name}</p>
+                                <p className="font-serif text-gray-700">{book.author}</p>
+
+                                <div className="flex items-center gap-2 mt-1">
+                                <span>⭐ {book.rating}</span>
+                                </div>
+
+                                <p className="mt-2 text-sm text-gray-800 leading-relaxed">
+                                {book.description}
+                                </p>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex flex-col gap-2 shrink-0">
+                                <button className="bg-blue-500 hover:bg-blue-600 transition px-4 py-2 rounded-md text-white text-sm">
+                                Edit
+                                </button>
+                                <button className="bg-red-400 hover:bg-red-500 transition px-4 py-2 rounded-md text-white text-sm">
+                                Delete
+                                </button>
+                            </div>
                         </div>
-                    )
-                })}
-            </div>
-        </div>
-    )
-}
+                        )
+                        })}
+                        </div>
+                    </div>
+                )
+            }
 
 export default Listbook;

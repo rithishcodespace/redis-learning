@@ -59,7 +59,7 @@ const Createbook = () => {
           placeholder="Book Name"
           value={formData.name}
           onChange={handleChange}
-          className="w-full mb-3 p-2 rounded"
+          className="w-full mb-3 p-2 rounded border"
           required
         />
 
@@ -69,7 +69,7 @@ const Createbook = () => {
           placeholder="Author"
           value={formData.author}
           onChange={handleChange}
-          className="w-full mb-3 p-2 rounded"
+          className="w-full mb-3 p-2 rounded border"
           required
         />
 
@@ -80,7 +80,7 @@ const Createbook = () => {
           placeholder="Rating"
           value={formData.rating}
           onChange={handleChange}
-          className="w-full mb-3 p-2 rounded"
+          className="w-full mb-3 p-2 rounded border"
           required
         />
 
@@ -89,7 +89,7 @@ const Createbook = () => {
           placeholder="Description"
           value={formData.description}
           onChange={handleChange}
-          className="w-full mb-4 p-2 rounded"
+          className="w-full mb-4 p-2 rounded border"
           rows="4"
           required
         />

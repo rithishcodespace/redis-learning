@@ -1,6 +1,7 @@
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Createbook from './pages/Createbook';
 import Listbook from './pages/Listbooks';
+import UpdateBook from './pages/updateBook';
 
 const App = () => {
   return(
@@ -8,6 +9,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Listbook/>}/>
         <Route path="/create_book" element={<Createbook/>}/>
+        <Route path="/update_book" element={<UpdateBook/>}/>
       </Routes>
     </BrowserRouter>  
   )
