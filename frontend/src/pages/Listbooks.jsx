@@ -10,31 +10,36 @@ const Listbook = () => {
             "name": "Atomic Habits",
             "author": "James Clear",
             "rating": 4.8,
-            "description": "A practical guide on building good habits, breaking bad ones, and mastering tiny behaviors that lead to remarkable results."
+            "description": "A practical guide on building good habits, breaking bad ones, and mastering tiny behaviors that lead to remarkable results.",
+            "id":1
         },
         {
             "name": "Deep Work",
             "author": "Cal Newport",
             "rating": 4.5,
-            "description": "Explores the importance of focused, distraction-free work and how it leads to success in a distracted world."
+            "description": "Explores the importance of focused, distraction-free work and how it leads to success in a distracted world.",
+            "id":2
         },
         {
             "name": "Clean Code",
             "author": "Robert C. Martin",
             "rating": 4.7,
-            "description": "A handbook of agile software craftsmanship that teaches how to write readable, maintainable, and efficient code."
+            "description": "A handbook of agile software craftsmanship that teaches how to write readable, maintainable, and efficient code.",
+            "id":3
         },
         {
             "name": "The Alchemist",
             "author": "Paulo Coelho",
             "rating": 4.3,
-            "description": "A philosophical novel about following your dreams and listening to your heart."
+            "description": "A philosophical novel about following your dreams and listening to your heart.",
+            "id":4
         },
         {
             "name": "Rich Dad Poor Dad",
             "author": "Robert Kiyosaki",
             "rating": 4.4,
-            "description": "Focuses on financial literacy, money mindset, and the difference between working for money and making money work for you."
+            "description": "Focuses on financial literacy, money mindset, and the difference between working for money and making money work for you.",
+            "id":5
         }
     ]);
 
@@ -45,7 +50,7 @@ const Listbook = () => {
 
     const fetchBooks = async () => {
         try{
-            let response = await axios("http://localhost:4000/api/getBooks");
+            let response = await axios.get("http://localhost:4000/api/getBooks");
             if(response.status == 200){
                 setBooks(response.data);
             }
@@ -56,6 +61,16 @@ const Listbook = () => {
         }
     }    
 
+    const handleDelete = async (key) => {
+        let response = await axios.delete("http://localhost:4000/api/delete_book",{
+            data:{id:key}
+        })
+        if(response.status == 200){
+            let afterDeletion = books.filter((book) => book.id != key);
+            setBooks(afterDeletion);
+        }
+    }
+
     return(
         <div className="flex flex-col gap-4 align-middle m-16 items-center">
             <div>
@@ -64,7 +79,7 @@ const Listbook = () => {
             <div className="h-142 w-2/4 bg-gray-300 overflow-scroll p-2.5 flex flex-col rounded-sm">
                 {books.length > 0 && books.map((book) => {
                     return(
-                        <div className="flex items-start gap-4 p-4">
+                        <div key={book.id} className="flex items-start gap-4 p-4">
                             {/* Book Info */}
                             <div className="bg-amber-300 rounded-2xl p-4 flex-1 shadow-sm">
                                 <p className="font-bold text-lg">{book.name}</p>
@@ -82,9 +97,9 @@ const Listbook = () => {
                             {/* Actions */}
                             <div className="flex flex-col gap-2 shrink-0">
                                 <button className="bg-blue-500 hover:bg-blue-600 transition px-4 py-2 rounded-md text-white text-sm">
-                                Edit
+                                <Link to={`/update_book/${book.id}`}>Edit</Link>
                                 </button>
-                                <button className="bg-red-400 hover:bg-red-500 transition px-4 py-2 rounded-md text-white text-sm">
+                                <button className="bg-red-400 hover:bg-red-500 transition px-4 py-2 rounded-md text-white text-sm" onClick={() => handleDelete(book.id)}>
                                 Delete
                                 </button>
                             </div>

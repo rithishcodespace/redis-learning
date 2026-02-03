@@ -9,7 +9,8 @@ const redis = require("../config/db");
                 const book = await redis.hGetAll(`book:${id}`);
                 books.push({
                     ...book,
-                    rating:Number(book.rating)
+                    rating:Number(book.rating),
+                    id:id.toString()
                 })
             }
             res.status(200).send(books);
@@ -25,7 +26,7 @@ exports.create_book = async(req,res,next) => {
         if(name.trim() == "" || author.trim() == "" || !rating || description.trim() == ""){
             return next(createError.BadRequest('Invalid payload!'));
         }
-        const id = redis.incr("book:id");
+        const id = await redis.incr("book:id");
         await redis.hSet(`book:${id}`, {
             "name":name,
             "author":author,
@@ -52,33 +53,28 @@ exports.update_book = async (req, res, next) => {
       return next(createError.BadRequest("Invalid payload!"));
     }
 
-    let books = await redis.lRange("books", 0, -1);
-
+    const bookIds = await redis.lRange("books", 0, -1);
     let updated = false;
 
-    books = books.map((bookStr) => {
-      const book = JSON.parse(bookStr);
-
-      if (book.id === id) {
+    for (const bk_id of bookIds) {
+      if (bk_id == id) {
         updated = true;
-        return JSON.stringify({
-          ...book,
+
+        await redis.hSet(`book:${bk_id}`, {
+          id,
           name,
           author,
           rating,
           description
         });
-      }
 
-      return bookStr;
-    });
+        break;
+      }
+    }
 
     if (!updated) {
       return next(createError.NotFound("Book not found"));
     }
-
-    await redis.del("books");
-    await redis.rPush("books", books);
 
     res.status(200).json({
       message: "Book updated successfully"
@@ -95,25 +91,18 @@ exports.delete_book = async(req,res,next) => {
         if(!id){
             return next(createError.NotFound("id not found!"));
         }
-        let books = await redis.lRange("books",0,-1);
-        let updated = false;
-        books = books.filter((book) => {
-            book = json.parse();
-            if(book.id === id){
-                updated = true;
-                return false;
-            }
-            return true;
-        })
-        if(!updated){
+        
+        let removed = await redis.lRem("books",0,id)
+
+        if(removed == 0){
             return res.status(200).json({
-                "message":"book not found"
-            })
+                message: "book not found"
+            });
         }
-        await redis.del("books");
-        if (books.length > 0) {
-            await redis.rPush("books", books);
-        }
+
+        await redis.hDel(`books:${id}`)
+        
+        res.status(200).send('book deleted successfully!')
     }
     catch(error){
         next(error);
